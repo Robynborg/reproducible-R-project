@@ -1,0 +1,57 @@
+---
+title: "Reproducible-R-Project"
+format: html
+editor: visual
+---
+
+## Extinct Mammals 
+
+```{r}
+library(tidyverse)
+
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+data <- read.csv("/Users/robynborgstrom/Desktop/Git/reproducible-R-project/Extinct mammal dataset.csv", header = TRUE, check.names = TRUE)
+view(data)
+colnames(data)[is.na(colnames(data))] <- "Picture"
+colnames(data)
+data<-subset(data, select = -Picture)
+print(data)
+colnames(data)
+
+extinction_by_order <- data %>%
+  group_by(Order) %>%
+  summarise(Count = n()) %>%
+  arrange(desc(Count))
+
+
+ggplot(extinction_by_order, aes(x = reorder(Order, -Count), y = Count, fill = Order)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Extinct Species by Order",
+       x = "Taxonomic Order",
+       y = "Number of Extinct Species") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+        legend.position = "none")
+
+
+
+```
+
+```{r}
+
+
+ggplot(data, aes(x = Date.of.extinction, y = Order)) +
+  geom_point(color = "blue") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "Mammal Extinctions Over Time", x = "Extinction Date", y = "Order")
+
+
+
+
+
+
+```
