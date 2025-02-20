@@ -4,7 +4,7 @@ format: html
 editor: visual
 ---
 
-## Extinct Mammals 
+## Extinct Mammals
 
 ```{r}
 library(tidyverse)
@@ -19,7 +19,7 @@ view(data)
 colnames(data)[is.na(colnames(data))] <- "Picture"
 colnames(data)
 data<-subset(data, select = -Picture)
-print(data)
+
 colnames(data)
 
 extinction_by_order <- data %>%
@@ -53,5 +53,44 @@ ggplot(data, aes(x = Date.of.extinction, y = Order)) +
 
 
 
+
+```
+
+```{r}
+
+
+library(gt)
+
+data %>%
+  count(Order, sort = TRUE) %>%
+  gt() %>%
+  tab_header(title = "Extinct Species by Order")
+
+
+```
+
+```{r}
+
+data %>%
+  count(Former.range, sort = TRUE) %>%
+  gt() %>%
+  tab_header(title = "Extinct Species by Region") %>%
+  cols_label(Former.range = "Former Range", n = "Number of Species")
+
+```
+
+```{r}
+
+earliest <- data %>% filter(Date.of.extinction == min(Date.of.extinction, na.rm = TRUE))
+latest <- data %>% filter(Date.of.extinction == max(Date.of.extinction, na.rm = TRUE))
+
+rbind(earliest, latest) %>%
+  select(Common.name, Binomial.name, Date.of.extinction, Former.range) %>%
+  gt() %>%
+  tab_header(title = "Earliest and Latest Extinctions") %>%
+  cols_label(Common.name = "Common Name", 
+             Binomial.name = "Scientific Name", 
+             Date.of.extinction = "Year of Extinction", 
+             Former.range = "Former Range")
 
 ```
