@@ -27,4 +27,4 @@ MIT
 Contributions are welcome! Please open an issue or submit a pull request if you'd like to add more data or improve the dataset.  
 
 ## Acknowledgments  
-https://www.kaggle.com/datasets/battle11king/extinct-mammals
+Raw dataset: https://www.kaggle.com/datasets/battle11king/extinct-mammals
