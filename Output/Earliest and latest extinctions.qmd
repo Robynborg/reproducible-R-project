@@ -1,0 +1,111 @@
+---
+title: "Reproducible-R-Project"
+format: html
+editor: visual
+---
+
+## Extinct Mammals
+
+```{r}
+library(tidyverse)
+
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+data <- read.csv("/Users/robynborgstrom/Desktop/Git/reproducible-R-project/Extinct mammal dataset.csv", header = TRUE, check.names = TRUE)
+view(data)
+colnames(data)[is.na(colnames(data))] <- "Picture"
+colnames(data)
+data<-subset(data, select = -Picture)
+
+colnames(data)
+
+extinction_by_order <- data %>%
+  group_by(Order) %>%
+  summarise(Count = n()) %>%
+  arrange(desc(Count))
+
+
+ggplot(extinction_by_order, aes(x = reorder(Order, -Count), y = Count, fill = Order)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Extinct Species by Order",
+       x = "Taxonomic Order",
+       y = "Number of Extinct Species") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+        legend.position = "none")
+
+
+
+```
+
+```{r}
+
+
+ggplot(data, aes(x = Date.of.extinction, y = Order)) +
+  geom_point(color = "blue") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "Mammal Extinctions Over Time", x = "Extinction Date", y = "Order")
+
+
+
+
+
+
+```
+
+```{r}
+
+
+library(gt)
+
+data %>%
+  count(Order, sort = TRUE) %>%
+  gt() %>%
+  tab_header(title = "Extinct Species by Order")
+
+
+```
+
+```{r}
+
+data %>%
+  count(Former.range, sort = TRUE) %>%
+  gt() %>%
+  tab_header(title = "Extinct Species by Region") %>%
+  cols_label(Former.range = "Former Range", n = "Number of Species")
+
+
+```
+
+```{r}
+
+earliest <- data %>% filter(Date.of.extinction == min(Date.of.extinction, na.rm = TRUE))
+latest <- data %>% filter(Date.of.extinction == max(Date.of.extinction, na.rm = TRUE))
+
+rbind(earliest, latest) %>%
+  select(Common.name, Binomial.name, Date.of.extinction, Former.range) %>%
+  gt() %>%
+  tab_header(title = "Earliest and Latest Extinctions") %>%
+  cols_label(Common.name = "Common Name", 
+             Binomial.name = "Scientific Name", 
+             Date.of.extinction = "Year of Extinction", 
+             Former.range = "Former Range")
+ggsave("earliest", plot = my_plot, width = 6, height = 4, dpi = 300)
+
+```
+
+```{r}
+library(ggplot2)
+
+# Create a plot
+my_plot <- ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point()
+
+# Save as PNG
+ggsave("my_plot.png", plot = my_plot, width = 6, height = 4, dpi = 300)
+
+
+```
